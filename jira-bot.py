@@ -53,7 +53,7 @@ def main():
     parser.add_argument('--project-key', default=DEFAULT_PROJECT_KEY, help=f"The Jira project id (optional, default: {DEFAULT_PROJECT_KEY})")
     parser.add_argument('--summary', required=True, help="The summary of the task.")
     parser.add_argument('--description', required=True, help="The description of the task.")
-    parser.add_argument('--issuetype', default=DEFAULT_ISSUE_TYPE, help="The issue type id (optional, default: Task)")
+    parser.add_argument('--issuetype', default=DEFAULT_ISSUE_TYPE, help=f"The issue type id (optional, default: {DEFAULT_ISSUE_TYPE})")
     parser.add_argument('--epic-link', help="The epic link (optional, e.g. 'HMS-123')")
     parser.add_argument('--component', default=DEFAULT_COMPONENT, help=f"The component (default: '{DEFAULT_COMPONENT}').")
 
