@@ -1,3 +1,5 @@
+""" jira_bot.py - Bot able to create jira-issues from pull-requests
+"""
 import argparse
 import os
 
@@ -9,7 +11,11 @@ DEFAULT_ISSUE_TYPE = os.getenv("DEFAULT_ISSUE_TYPE", "Task")
 DEFAULT_COMPONENT = os.getenv("DEFAULT_COMPONENT", "Image Builder")
 
 
-def create_jira_task(token, project_key, summary, description, issuetype, epic_link, component):
+# pylint: disable=too-many-arguments
+def create_jira_task(token, project_key, summary, description, issue_type, epic_link, component):
+    """
+    create_jira_task creates a jira issue with the given parameter
+    """
     options = {
         'server': JIRA_SERVER,
         'headers': {
@@ -19,6 +25,7 @@ def create_jira_task(token, project_key, summary, description, issuetype, epic_l
     try:
         jira = JIRA(options=options)
         print("Connected to Jira successfully using a personal access token.")
+    # pylint: disable=broad-exception-caught
     except Exception as e:
         print(f"Failed to connect to Jira: {e}")
         return
@@ -27,7 +34,7 @@ def create_jira_task(token, project_key, summary, description, issuetype, epic_l
         'project': {'key': project_key},
         'summary': summary,
         'description': description,
-        'issuetype': {'name': issuetype},
+        'issuetype': {'name': issue_type},
     }
 
     # Add epic link if provided
@@ -41,21 +48,30 @@ def create_jira_task(token, project_key, summary, description, issuetype, epic_l
     try:
         new_issue = jira.create_issue(fields=issue_dict)
         print(f"Task created successfully: {new_issue.key}")
-        #TODO: Update pull request title with the new Jira issue key
+        # TODO: Update pull request title with the new Jira issue key
+    # pylint: disable=broad-exception-caught
     except Exception as e:
         print(f"Failed to create task: {e}")
 
 
 def main():
+    """ main - command line parsing and calling the bot """
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Create a Jira task.")
-    parser.add_argument('--token', required=True, help="The Jira personal access token")
-    parser.add_argument('--project-key', default=DEFAULT_PROJECT_KEY, help=f"The Jira project id (optional, default: {DEFAULT_PROJECT_KEY})")
-    parser.add_argument('--summary', required=True, help="The summary of the task.")
-    parser.add_argument('--description', required=True, help="The description of the task.")
-    parser.add_argument('--issuetype', default=DEFAULT_ISSUE_TYPE, help=f"The issue type id (optional, default: {DEFAULT_ISSUE_TYPE})")
-    parser.add_argument('--epic-link', help="The epic link (optional, e.g. 'HMS-123')")
-    parser.add_argument('--component', default=DEFAULT_COMPONENT, help=f"The component (default: '{DEFAULT_COMPONENT}').")
+    parser.add_argument('--token', required=True,
+                        help="The Jira personal access token")
+    parser.add_argument('--project-key', default=DEFAULT_PROJECT_KEY,
+                        help=f"The Jira project id (optional, default: {DEFAULT_PROJECT_KEY})")
+    parser.add_argument('--summary', required=True,
+                        help="The summary of the task.")
+    parser.add_argument('--description', required=True,
+                        help="The description of the task.")
+    parser.add_argument('--issuetype', default=DEFAULT_ISSUE_TYPE,
+                        help=f"The issue type id (optional, default: {DEFAULT_ISSUE_TYPE})")
+    parser.add_argument(
+        '--epic-link', help="The epic link (optional, e.g. 'HMS-123')")
+    parser.add_argument('--component', default=DEFAULT_COMPONENT,
+                        help=f"The component (default: '{DEFAULT_COMPONENT}').")
 
     args = parser.parse_args()
 
@@ -65,7 +81,7 @@ def main():
         project_key=args.project_key,
         summary=args.summary,
         description=args.description,
-        issuetype=args.issuetype,
+        issue_type=args.issuetype,
         epic_link=args.epic_link,
         component=args.component
     )
@@ -73,4 +89,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
