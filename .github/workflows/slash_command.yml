@@ -35,7 +35,7 @@ jobs:
             python3 jira_bot.py --token "$JIRA_TOKEN" --summary "$PR_TITLE" --description "$PR_BODY" --epic-link "$EPIC_KEY"
 
             # Add a rocket reaction to the comment
-            curl ${{github.event.comment.url}}/reactions \
+            curl -L ${{github.event.comment.url}}/reactions \
               -X POST \
               -d '{"content":"rocket"}' \
               -H "Accept: application/vnd.github+json" \
