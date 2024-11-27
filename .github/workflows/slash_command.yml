@@ -46,7 +46,7 @@ jobs:
             # jq -RSa is used to escape the JSON string
             # the sed madness is needed to replace the escaped newlines with actual newlines
             NEW_TITLE=$(echo "$PR_TITLE ($JIRA_KEY)" | jq -Rsa .)
-            NEW_BODY=$(echo "$PR_BODY\n\nJIRA: [$JIRA_KEY](https://issues.redhat.com/browse/$JIRA_KEY)"| jq -Rsa . | sed 's/\\\\\\\\n/\\\\n/g')
+            NEW_BODY=$(echo "$PR_BODY\n\nJIRA: [$JIRA_KEY](https://issues.redhat.com/browse/$JIRA_KEY)"| jq -Rsa . | sed 's/\\\\n/\\n/g')
             curl -L ${{github.event.issue.url}} \
               -X PATCH \
               -d '{"title":'"$NEW_TITLE"',"body":'"$NEW_BODY"'}' \
