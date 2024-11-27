@@ -38,8 +38,9 @@ jobs:
             curl ${{github.event.comment.url}}/reactions \
               -X POST \
               -d '{"content":"rocket"}' \
-              -H "Accept: application/vnd.github.squirrel-girl-preview+json" \
-              -H "Authorization: token $GITHUB_TOKEN"
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              -H "Authorization: Bearer $GITHUB_TOKEN"
           else
             echo "No recognized slash command found."
           fi
