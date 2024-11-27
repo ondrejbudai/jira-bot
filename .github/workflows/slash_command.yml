@@ -21,7 +21,7 @@ jobs:
 
       - name: Process Slash Command
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.SCHUTZBOT_TOKEN }}
           COMMENT_BODY: ${{ github.event.comment.body }}
           PR_TITLE: ${{ github.event.issue.title }}
           PR_BODY: ${{ github.event.issue.body }}
