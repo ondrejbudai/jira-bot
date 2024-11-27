@@ -14,7 +14,7 @@ jobs:
         run: echo "Comment is on a pull request"
 
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Process Slash Command
         env:
@@ -23,7 +23,7 @@ jobs:
           COMMENT_BODY="${{ github.event.comment.body }}"
           if [[ "$COMMENT_BODY" =~ ^/jira ]]; then
             echo "Slash command '/jira' detected!"
-            python3 jira-bot.py --token "${{ secrets.JIRA_TOKEN }}" --summary github.event.issue.pull_request.title --description github.event.issue.pull_request.description --epic-link "$COMMENT_BODY"
+            python3 jira_bot.py --token "${{ secrets.JIRA_TOKEN }}" --summary github.event.issue.pull_request.title --description github.event.issue.pull_request.description --epic-link "$COMMENT_BODY"
           else
             echo "No recognized slash command found."
           fi
