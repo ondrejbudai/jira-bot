@@ -23,7 +23,7 @@ jobs:
           COMMENT_BODY="${{ github.event.comment.body }}"
           if [[ "$COMMENT_BODY" =~ ^/jira ]]; then
             echo "Slash command '/jira' detected!"
-            python3 jira-bot.py --slash-command "$COMMENT_BODY"
+            python3 jira-bot.py --token "${{ secrets.JIRA_TOKEN }}" --summary github.event.issue.pull_request.title --description github.event.issue.pull_request.description --epic-link "$COMMENT_BODY"
           else
             echo "No recognized slash command found."
           fi
