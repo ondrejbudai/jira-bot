@@ -32,7 +32,7 @@ jobs:
             echo "Slash command '/jira' detected!"
             pip install -r requirements.txt
             EPIC_KEY=$(echo "$COMMENT_BODY" | sed -n 's/.*\b\([A-Z]\{2,\}-[0-9]\{1,\}\)\b.*/\1/p')
-            python3 jira_bot.py --token "$JIRA_TOKEN" --summary "$PR_TITLE" --description "$PR_BODY" --epic-link "$EPIC_KEY"
+            JIRA_KEY=$(python3 jira_bot.py --token "$JIRA_TOKEN" --summary "$PR_TITLE" --description "$PR_BODY" --epic-link "$EPIC_KEY")
 
             # Add a rocket reaction to the comment
             curl -L ${{github.event.comment.url}}/reactions \
@@ -40,6 +40,16 @@ jobs:
               -d '{"content":"rocket"}' \
               -H "Accept: application/vnd.github+json" \
               -H "X-GitHub-Api-Version: 2022-11-28" \
+              -H "Authorization: token $GITHUB_TOKEN"
+
+            # Edit the PR title and body with the JIRA key
+            # jq -RSa is used to escape the JSON string
+            NEW_TITLE=$(echo "$PR_TITLE ($JIRA_KEY)" | jq -Rsa .)
+            NEW_BODY=$(echo "$PR_BODY\n\nJIRA: [$JIRA_KEY](https://issues.redhat.com/browse/$JIRA_KEY)"| jq -Rsa .)
+            curl -L ${{github.event.issue.url}} \
+              -X PATCH \
+              -d '{"title":'"$NEW_TITLE"',"body":'"$NEW_BODY"'}' \
+              -H "Accept: application/vnd.github.v3+json" \
               -H "Authorization: token $GITHUB_TOKEN"
           else
             echo "No recognized slash command found."
