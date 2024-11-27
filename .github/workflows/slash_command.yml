@@ -24,7 +24,8 @@ jobs:
           if [[ "$COMMENT_BODY" =~ ^/jira ]]; then
             echo "Slash command '/jira' detected!"
             pip install -r requirements.txt
-            python3 jira_bot.py --token "${{ secrets.JIRA_TOKEN }}" --summary github.event.issue.pull_request.title --description github.event.issue.pull_request.description --epic-link "$COMMENT_BODY"
+            EPIC_KEY=$(echo "COMMENT_BODY" | sed -n 's/.*\b\([A-Z]\{2,\}-[0-9]\{1,\}\)\b.*/\1/p')
+            python3 jira_bot.py --token "${{ secrets.JIRA_TOKEN }}" --summary github.event.issue.pull_request.title --description github.event.issue.pull_request.description --epic-link "$EPIC_KEY"
           else
             echo "No recognized slash command found."
           fi
