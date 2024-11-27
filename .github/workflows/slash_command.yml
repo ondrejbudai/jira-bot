@@ -24,11 +24,20 @@ jobs:
           PR_BODY: ${{ github.event.issue.body }}
           JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
         run: |
+          set -euo pipefail
           if [[ "$COMMENT_BODY" =~ ^/jira ]]; then
             echo "Slash command '/jira' detected!"
             pip install -r requirements.txt
             EPIC_KEY=$(echo "$COMMENT_BODY" | sed -n 's/.*\b\([A-Z]\{2,\}-[0-9]\{1,\}\)\b.*/\1/p')
             python3 jira_bot.py --token "$JIRA_TOKEN" --summary "$PR_TITLE" --description "$PR_BODY" --epic-link "$EPIC_KEY"
+
+            # Add a rocket reaction to the comment
+            curl ${{github.event.comment.url}}/reactions \
+              -X POST \
+              -d '{"content":"rocket"}' \
+              -H "Accept: application/vnd.github.squirrel-girl-preview+json" \
+              -H "Authorization: token $GITHUB_TOKEN"
           else
             echo "No recognized slash command found."
           fi
+
