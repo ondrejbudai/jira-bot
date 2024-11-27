@@ -2,6 +2,7 @@
 """
 import argparse
 import os
+import sys
 
 from jira import JIRA
 
@@ -24,10 +25,10 @@ def create_jira_task(token, project_key, summary, description, issue_type, epic_
     }
     try:
         jira = JIRA(options=options)
-        print("Connected to Jira successfully using a personal access token.")
+        print("Connected to Jira successfully using a personal access token.", file=sys.stderr)
     # pylint: disable=broad-exception-caught
     except Exception as e:
-        print(f"Failed to connect to Jira: {e}")
+        print(f"Failed to connect to Jira: {e}", file=sys.stderr)
         return
     # Task creation dictionary
     issue_dict = {
@@ -47,11 +48,12 @@ def create_jira_task(token, project_key, summary, description, issue_type, epic_
 
     try:
         new_issue = jira.create_issue(fields=issue_dict)
-        print(f"Task created successfully: {new_issue.key}")
+        print(f"Task created successfully: {new_issue.key}", file=sys.stderr)
+        print(new_issue.key)
         # TODO: Update pull request title with the new Jira issue key
     # pylint: disable=broad-exception-caught
     except Exception as e:
-        print(f"Failed to create task: {e}")
+        print(f"Failed to create task: {e}", file=sys.stderr)
 
 
 def main():
