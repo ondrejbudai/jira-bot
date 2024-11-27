@@ -1,0 +1,29 @@
+name: Slash Command Handler
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  handle-slash-command:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check for PR Comment
+        if: github.event.issue.pull_request != null
+        run: echo "Comment is on a pull request"
+
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Process Slash Command
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          COMMENT_BODY="${{ github.event.comment.body }}"
+          if [[ "$COMMENT_BODY" =~ ^/jira ]]; then
+            echo "Slash command '/jira' detected!"
+            python3 jira-bot.py --slash-command "$COMMENT_BODY"
+          else
+            echo "No recognized slash command found."
+          fi
