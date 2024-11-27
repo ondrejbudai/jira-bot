@@ -6,6 +6,9 @@ on:
 
 jobs:
   handle-slash-command:
+    permissions:
+      contents: read
+      issues: write
     runs-on: ubuntu-latest
 
     steps:
